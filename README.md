@@ -1,4 +1,4 @@
-## Sudoku
+## Blackjack
 
 This project was developed by students taking CS 531 (AI) at Oregon State University. Coded in Python3.
 
