@@ -8,6 +8,6 @@ March 13, 2020
 """
 
 class player():
-
     def __init__(self):
-        self.deck_memory = []
+        self.deck_memory = [[]]
+	
