@@ -9,5 +9,11 @@ March 13, 2020
 
 class player():
     def __init__(self):
-        self.deck_memory = [[]]
+        self.hand = []
+        self.memory = [[]]
+        self.balance = 0
+
+    def hit(self):
+
+        return
 	
