@@ -9,12 +9,13 @@ March 13, 2020
 import player as p
 
 class Dealer():
-    def _init_ (self):
-        self.player = p.player()
+    def __init__ (self, deck):
+        self.player = p.Player(deck)
     
 class blackjack():
     def __init__(self, number_each_AI, deck_count , number_hands):
         self.players = []   
+
         #for i in range (number_each_AI):  
         #    for j in range(i):
          
@@ -22,7 +23,7 @@ class blackjack():
         #    for i in range (value):
                        
             
-        self.dealer = Dealer()
+
         self.deck = {}
         for i in range(1,11):
             if i < 10:
@@ -30,9 +31,12 @@ class blackjack():
             elif i == 10:
                 self.deck[i] = 16 * deck_count            
         self.number_hands = number_hands
+        self.dealer = Dealer(self.deck)
+        self.players.append(p.DumbAgent(self.deck))
         pass
     
     def play(self):
+        #call some kind of bet before the hand
         self.initial_deal()
         for i in range (self.number_hands):
             self.play_hand()

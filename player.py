@@ -33,4 +33,14 @@ class Player:
     def surrender(self):
         return
 
+    def take_action(self):
+        return
 
+
+class DumbAgent(Player):
+    def __init__(self, deck):
+        Player.__init__(self, deck)
+
+    def take_action(self):
+        self.hit()
+        print("in override take action")   
