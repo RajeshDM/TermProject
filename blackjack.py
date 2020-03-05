@@ -33,6 +33,7 @@ class blackjack():
         self.number_hands = number_hands
         self.dealer = Dealer(self.deck)
         self.players.append(p.DumbAgent(self.deck))
+        self.players.append(p.SmartAgent(self.deck))
         pass
     
     def play(self):
@@ -48,6 +49,6 @@ class blackjack():
 
     def play_hand(self):
         for player in self.players :
-            player.take_action()
+            player.take_action(self.deck)
 
 
