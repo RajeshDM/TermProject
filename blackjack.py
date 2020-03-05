@@ -8,7 +8,7 @@ March 13, 2020
 """
 
 class blackjack():
-	def __init__(self, number_each_AI, deck_count , number_hands):
+    def __init__(self, number_each_AI, deck_count , number_hands):
         self.players = []   
         #for i in range (number_each_AI):  
         #    for j in range(i):
@@ -22,7 +22,7 @@ class blackjack():
         for i in range(1,14):
             self.deck[i] = i * deck_count
         self.number_hands = number_hands
-		pass
+        pass
     
     def play(self):
         self.initial_deal()
