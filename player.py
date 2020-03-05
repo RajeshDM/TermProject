@@ -16,4 +16,8 @@ class player():
     def hit(self):
 
         return
+
+    def take_action():
+
+        return
 	
