@@ -6,9 +6,14 @@ CS 531 - AI
 March 13, 2020
 ***********************************
 """
+import player as p
 
+class Dealer():
+    def _init_ (self):
+        self.player = p.player()
+    
 class blackjack():
-	def __init__(self, number_each_AI, deck_count , number_hands):
+    def __init__(self, number_each_AI, deck_count , number_hands):
         self.players = []   
         #for i in range (number_each_AI):  
         #    for j in range(i):
@@ -19,10 +24,13 @@ class blackjack():
             
         self.dealer = Dealer()
         self.deck = {}
-        for i in range(1,14):
-            self.deck[i] = i * deck_count
+        for i in range(1,11):
+            if i < 10:
+                self.deck[i] = 4 * deck_count
+            elif i == 10:
+                self.deck[i] = 16 * deck_count            
         self.number_hands = number_hands
-		pass
+        pass
     
     def play(self):
         self.initial_deal()
@@ -30,7 +38,7 @@ class blackjack():
             self.play_hand()
         pass
 
-    def initial_deal(self)
+    def initial_deal(self):
         
         pass
 
