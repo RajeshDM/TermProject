@@ -23,7 +23,7 @@ class blackjack():
         #    for i in range (value):
                        
             
-
+        self.deck_count = deck_count
         self.deck = {}
         for i in range(1,11):
             if i < 10:
@@ -49,6 +49,6 @@ class blackjack():
 
     def play_hand(self):
         for player in self.players :
-            player.take_action(self.deck)
+            player.take_action(self.deck, self.deck_count)
 
 
