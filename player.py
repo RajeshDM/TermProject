@@ -12,26 +12,49 @@ class Player:
     def __init__(self, deck):
         self.hand = []
         self.memory = deck
+        # balance should also be initialized
         self.balance = 0
         self.start_bet = 0
         self.current_bet = 0
-        self.played = False
+        # give each player an id..?
+        self.id = 0
+
 
     def hit(self):
+        # pass in card from random card func, for now lets say card = 3
+        card = 3
+        self.hand.append(card)
+        print("current hand: ", self.hand)
+        self.memory[card] -= 1
+        print("current memory: ", self.memory)
 
-        return
+
+
+    def initial_bet(self):
+        # define minimum bet and pass it in to constructor
+        # hardcoding 20 for now
+        self.start_bet = 20
+        self.current_bet = self.start_bet
 
     def stand(self):
-        return
+        pass
 
     def split(self):
         return
 
     def double_down(self):
+        self.current_bet *= self.current_bet
+        self.hit()
+
         return
 
-    def surrender(self):
-        return
+    # def surrender(self):
+    #     if not self.played:
+    #         # function to remove player from game
+    #         # lose half of start bet
+    #         self.start_bet /= 2
+    #     else:
+    #         print("Sorry, you can't surrender after starting the game")
 
     def take_action(self, deck):
         return
@@ -43,7 +66,8 @@ class DumbAgent(Player):
 
     def take_action(self, deck):
         self.hit()
-        print("in override take action")   
+        print("\nin override take action")
+
 
 class SmartAgent(Player):
     def __init__(self, deck):
@@ -65,12 +89,9 @@ class SmartAgent(Player):
         self.trueCount = (self.runCount / num_decks)
         print("Current deck count", self.runCount)
         print("True count", self.trueCount, num_decks)
-        
-        
-        
+        print(deck)
+
     def take_action(self, deck):
         self.update_count(deck)
         print("Current deck count in action", self.runCount)      
         print("Smart agent making play")
-
-    

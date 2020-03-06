@@ -7,6 +7,8 @@ March 13, 2020
 ***********************************
 """
 import player as p
+import random
+
 
 class Dealer():
     def __init__ (self, deck):
@@ -22,7 +24,6 @@ class blackjack():
         #for key,value in number_each_AI.items():
         #    for i in range (value):
                        
-            
 
         self.deck = {}
         for i in range(1,11):
@@ -32,9 +33,18 @@ class blackjack():
                 self.deck[i] = 16 * deck_count            
         self.number_hands = number_hands
         self.dealer = Dealer(self.deck)
+        # give player an id here
         self.players.append(p.DumbAgent(self.deck))
         self.players.append(p.SmartAgent(self.deck))
         pass
+
+    # select a random card from deck
+    # will need fine tuning
+    def select_card(self):
+        card = random.randint(1, 10)
+        self.deck[card] -= 1
+        return card
+
     
     def play(self):
         #call some kind of bet before the hand
