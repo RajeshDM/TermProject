@@ -8,6 +8,11 @@ March 13, 2020
 """
 
 
+class Dealer():
+    def __init__ (self, deck):
+        self.player = Player(deck)
+
+
 class Player:
     def __init__(self, deck):
         self.hand = []

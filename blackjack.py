@@ -10,10 +10,6 @@ import player as p
 import random
 
 
-class Dealer():
-    def __init__ (self, deck):
-        self.player = p.Player(deck)
-    
 class blackjack():
     def __init__(self, number_each_AI, deck_count , number_hands):
         self.players = []   
@@ -34,7 +30,7 @@ class blackjack():
             elif i == 10:
                 self.deck[i] = 16 * deck_count            
         self.number_hands = number_hands
-        self.dealer = Dealer(self.deck)
+        self.dealer = p.Dealer(self.deck)
         # give player an id here
         self.players.append(p.DumbAgent(self.deck))
         self.players.append(p.SmartAgent(self.deck))
@@ -50,17 +46,32 @@ class blackjack():
     
     def play(self):
         #call some kind of bet before the hand
-        self.initial_deal()
         for i in range (self.number_hands):
+            self.place_bets()
+            self.initial_deal()
             self.play_hand()
+            self.dealer.take_action()
+            self.distribute_winnings()
         pass
 
     def initial_deal(self):
         
         pass
 
+    def place_bets(self):
+         for player in self.players :
+             player.place_bet()
+
     def play_hand(self):
         for player in self.players :
             player.take_action(self.deck, self.deck_count)
+
+    def distribute_winnings(self):
+        player_data = {}
+        for player in self.players:
+            player_data[player] = sum(player.hand)
+
+        #sort the dictionary
+        #decide winnings based on the values
 
 
