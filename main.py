@@ -15,7 +15,7 @@ def main():
     #game.deck[1] -= 2
     #print(game.deck)
     print("Number of hands to play: ", game.number_hands)
-    game.play()
+    game.play_game()
     
     return
 

@@ -6,12 +6,7 @@ CS 531 - AI
 March 13, 2020
 ***********************************
 """
-
-
-class Dealer():
-    def __init__ (self, deck):
-        self.player = Player(deck)
-
+import random
 
 class Player:
     def __init__(self, deck):
@@ -19,15 +14,19 @@ class Player:
         self.memory = deck
         # balance should also be initialized
         self.balance = 0
-        self.start_bet = 0
-        self.current_bet = 0
+        #self.start_bet = 0
+        #self.current_bet = 0
+        self.current_hand_bet = 0
         # give each player an id..?
         self.id = 0
 
 
-    def hit(self):
+    def hit(self,deck):
         # pass in card from random card func, for now lets say card = 3
         card = 3
+        
+        random.randn(13)
+        
         self.hand.append(card)
         print("current hand: ", self.hand)
         self.memory[card] -= 1
@@ -53,6 +52,9 @@ class Player:
 
         return
 
+    def place_bet(self):
+        pass
+
     # def surrender(self):
     #     if not self.played:
     #         # function to remove player from game
@@ -65,6 +67,13 @@ class Player:
         return
 
 
+class Dealer(Player):
+    def __init__(self, deck):
+        Player.__init__(self, deck)
+
+    def take_action(self):
+        pass
+
 class DumbAgent(Player):
     def __init__(self, deck):
         Player.__init__(self, deck)
@@ -72,6 +81,12 @@ class DumbAgent(Player):
     def take_action(self, deck, num_decks):
         self.hit()
         print("\nin override take action")
+
+    def place_bet(self):
+        if self.balance >= 1 :
+            self.current_hand_bet = 1
+            self.balance -= self.current_hand_bet
+        pass
 
 
 class SmartAgent(Player):

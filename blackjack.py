@@ -13,15 +13,13 @@ import random
 class blackjack():
     def __init__(self, number_each_AI, deck_count , number_hands):
         self.players = []   
-
+        
         #for i in range (number_each_AI):  
-        #    for j in range(i):
+        #    self.player.append(DumbAgent(deck_count))):
          
         #for key,value in number_each_AI.items():
         #    for i in range (value):
                        
-
-
         self.deck_count = deck_count
         self.deck = {}
         for i in range(1,11):
@@ -33,7 +31,8 @@ class blackjack():
         self.dealer = p.Dealer(self.deck)
         # give player an id here
         self.players.append(p.DumbAgent(self.deck))
-        self.players.append(p.SmartAgent(self.deck))
+        self.players.append(p.DumbAgent(self.deck))
+        #self.players.append(p.SmartAgent(self.deck))
         pass
 
     # select a random card from deck
@@ -44,7 +43,7 @@ class blackjack():
         return card
 
     
-    def play(self):
+    def play_game(self):
         #call some kind of bet before the hand
         for i in range (self.number_hands):
             self.place_bets()
@@ -55,8 +54,11 @@ class blackjack():
         pass
 
     def initial_deal(self):
-        
-        pass
+        for player in self.players :
+            player.hit(self.deck)
+            player.hit(self.deck)
+        self.dealer.hit(self.deck)
+
 
     def place_bets(self):
          for player in self.players :
@@ -70,8 +72,19 @@ class blackjack():
         player_data = {}
         for player in self.players:
             player_data[player] = sum(player.hand)
+        player_data[self.dealer] = sum(self.dealer.hand)
 
         #sort the dictionary
         #decide winnings based on the values
 
+        #player_data.sort()
+        round_winner = max(player_data,key=player_data.get)
+        
+        #round_winner = player_data.pop()
+        print ("round winner" , round_winner)
+        for player in self.players:
+            if round_winner != player :
+                round_winner.balance += player.current_hand_bet
+                player.balance -= player.current_hand_bet
 
+            
