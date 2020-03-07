@@ -9,7 +9,7 @@ March 13, 2020
 import blackjack as b
 
 def main():
-    game = b.blackjack(2, 2, 5)
+    game = b.blackjack(2, 3, 5)
     print("Game players: " , game.players)
     print("Game deck: ", game.deck)
     #game.deck[1] -= 2
