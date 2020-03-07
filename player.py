@@ -23,9 +23,15 @@ class Player:
 
     def hit(self,deck):
         # pass in card from random card func, for now lets say card = 3
-        card = 3
-        
-        random.randn(13)
+        #card = 3
+        #random.randn(13)
+        while(1):
+            card = random.randint(1, 10)
+            if deck[card] > 0:
+                deck[card] -= 1
+                break
+            
+            
         
         self.hand.append(card)
         print("current hand: ", self.hand)
@@ -33,7 +39,9 @@ class Player:
         print("current memory: ", self.memory)
 
 
-
+    def reset_hand(self):
+        self.hand = []
+        
     def initial_bet(self):
         # define minimum bet and pass it in to constructor
         # hardcoding 20 for now
@@ -46,9 +54,9 @@ class Player:
     def split(self):
         return
 
-    def double_down(self):
+    def double_down(self, deck):
         self.current_bet *= self.current_bet
-        self.hit()
+        self.hit(deck)
 
         return
 
@@ -79,8 +87,8 @@ class DumbAgent(Player):
         Player.__init__(self, deck)
 
     def take_action(self, deck, num_decks):
-        self.hit()
-        print("\nin override take action")
+        self.hit(deck)
+        print("in override take action")
 
     def place_bet(self):
         if self.balance >= 1 :
@@ -97,6 +105,7 @@ class SmartAgent(Player):
 
     def update_count(self, deck, num_decks):
         num_cards = 0
+        self.memory = deck
         for i in range (1, 11):
             if i < 7 and i > 1:
                 self.runCount += (4*num_decks - deck[i])
@@ -120,9 +129,9 @@ class SmartAgent(Player):
     def place_bet(self, deck, num_decks):
         self.update_count(deck, num_decks)
         betting_unit = 25
-        bet = (self.trueCount * betting_unit)
+        self.current_hand_bet = (self.trueCount * betting_unit)
         if( bet < betting_unit):
-            bet = betting_unit
+            self.current_hand_bet = betting_unit
 
         print("I will bet", bet)
         #make bet

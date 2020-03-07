@@ -51,6 +51,7 @@ class blackjack():
             self.play_hand()
             self.dealer.take_action()
             self.distribute_winnings()
+            self.reset_hands()
         pass
 
     def initial_deal(self):
@@ -68,6 +69,10 @@ class blackjack():
         for player in self.players :
             player.take_action(self.deck, self.deck_count)
 
+    def reset_hands(self):
+        for player in self.players :
+            player.reset_hand()
+            
     def distribute_winnings(self):
         player_data = {}
         for player in self.players:
