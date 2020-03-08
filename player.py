@@ -60,6 +60,48 @@ class Player:
 
         return
 
+    def calculate_minimax(self, action, deck, risk):
+        # getting the list of probabilities
+        prob = self.get_list()
+        reward = [i * self.current_hand_bet for i in prob]
+        reward[-1] *= 2
+
+        # prob_reward = list(zip(prob, reward))
+        d = ["hit", "stand", "double"]
+
+        prob_decision = dict(zip(d, prob))
+        reward_decision = dict(zip(d, reward))
+
+        # if greedy $
+        if action == "money":
+            decision = max(reward_decision, key=reward_decision.get)
+            self.calc_decision(decision, deck)
+
+        # if just wants to win every time
+        if action == "win":
+
+            # break the tie between hit/double
+
+            # break the tie between hit/stand
+
+            decision = max(prob_decision, key=prob_decision.get)
+            self.calc_decision(decision, deck)
+
+
+    def calc_decision(self, d, deck):
+        if d == "hit":
+            self.hit(deck)
+
+        if d == "stand":
+            self.stand()
+
+        if d == "double":
+            self.double_down(deck)
+
+
+    def get_list(self):
+        return [0.5, 0.3, 0.5]
+
     def place_bet(self):
         pass
 
