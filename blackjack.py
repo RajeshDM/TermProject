@@ -31,8 +31,8 @@ class blackjack():
         self.dealer = p.Dealer(self.deck)
         # give player an id here
         self.players.append(p.DumbAgent(self.deck))
-        self.players.append(p.DumbAgent(self.deck))
-        #self.players.append(p.SmartAgent(self.deck))
+        #self.players.append(p.DumbAgent(self.deck))
+        self.players.append(p.SmartAgent(self.deck))
         pass
 
     # select a random card from deck
@@ -49,8 +49,8 @@ class blackjack():
             self.place_bets()
             self.initial_deal()
             self.play_hand()
-            self.dealer.take_action()
-            self.distribute_winnings()
+            self.dealer.take_action(self.deck)
+            self.distribute_winnings_dealer()
             self.reset_hands()
         pass
 
@@ -63,7 +63,7 @@ class blackjack():
 
     def place_bets(self):
          for player in self.players :
-             player.place_bet()
+             player.place_bet(self.deck, self.deck_count)
 
     def play_hand(self):
         for player in self.players :
@@ -72,8 +72,29 @@ class blackjack():
     def reset_hands(self):
         for player in self.players :
             player.reset_hand()
+
+    def calculate_win_odds(self, avg_hand, dealer_card):
+        total_cards = 52*self.deck_count
+        card_chance = {}
+        dealer_hand = {}
+        starting_val = dealer_card
+        for i in range(1, 11):
+            card_chance[i] = (self.deck[i]/total_cards)
+
+        #print('chance', card_chance[10])
+        chance_of_loss = 0
+        for j in range(starting_val, 22):
+            try:
+                dealer_hand[j] = card_chance[j-starting_val]
+            except:
+                dealer_hand[j] = 0
+            if j > avg_hand:
+                chance_of_loss += dealer_hand[j]
+
+        print("dealer hand probabilities", total_cards, dealer_hand)
+        print("Chance of losing", chance_of_loss)
             
-    def distribute_winnings(self):
+    def distribute_winnings_all(self):
         player_data = {}
         for player in self.players:
             player_data[player] = sum(player.hand)
@@ -91,5 +112,27 @@ class blackjack():
             if round_winner != player :
                 round_winner.balance += player.current_hand_bet
                 player.balance -= player.current_hand_bet
+
+    def distribute_winnings_dealer(self):
+        player_data = {}
+        player_data[self.dealer] = sum(self.dealer.hand)
+        if player_data[self.dealer] > 21:
+            player_data[self.dealer] = 0
+
+        for player in self.players:
+            player_data[player] = sum(player.hand)
+            if player_data[player] > 21:
+                player_data[player] = 0
+            if player_data[player] > player_data[self.dealer]:
+                player.balance += player.current_hand_bet
+                print("player won", player, player.balance, player_data[player], player_data[self.dealer])
+            elif player_data[player] < player_data[self.dealer]:
+                print("player lost", player, player.balance, player_data[player], player_data[self.dealer])
+                player.balance -= player.current_hand_bet
+                
+    
+        
+            
+            
 
             

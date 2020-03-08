@@ -13,7 +13,7 @@ class Player:
         self.hand = []
         self.memory = deck
         # balance should also be initialized
-        self.balance = 0
+        self.balance = 500
         #self.start_bet = 0
         #self.current_bet = 0
         self.current_hand_bet = 0
@@ -121,8 +121,18 @@ class Dealer(Player):
     def __init__(self, deck):
         Player.__init__(self, deck)
 
-    def take_action(self):
+    def take_action(self, deck):
+        hand_val = 0
+        stand_val = 17
+        for x in self.hand:
+            hand_val += x
+        print("hand value", hand_val)
+        if hand_val < stand_val:
+            self.hit(deck)
         pass
+            
+        
+        
 
 class DumbAgent(Player):
     def __init__(self, deck):
@@ -132,7 +142,7 @@ class DumbAgent(Player):
         self.hit(deck)
         print("in override take action")
 
-    def place_bet(self):
+    def place_bet(self, deck, num_decks):
         if self.balance >= 1 :
             self.current_hand_bet = 1
             self.balance -= self.current_hand_bet
@@ -165,6 +175,12 @@ class SmartAgent(Player):
 
     def take_action(self, deck, num_decks):
         self.update_count(deck, num_decks)
+        hand_val = sum(self.hand)
+        stand_val = 17
+        print("hand value", hand_val)
+        if hand_val < stand_val:
+            self.hit(deck)
+        pass
         print("Current deck count in action", self.runCount)
         print("Smart agent making play")
 
@@ -172,10 +188,10 @@ class SmartAgent(Player):
         self.update_count(deck, num_decks)
         betting_unit = 25
         self.current_hand_bet = (self.trueCount * betting_unit)
-        if( bet < betting_unit):
+        if( self.current_hand_bet < betting_unit):
             self.current_hand_bet = betting_unit
 
-        print("I will bet", bet)
+        print("I will bet", self.current_hand_bet)
         #make bet
 
 
