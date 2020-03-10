@@ -106,7 +106,7 @@ class Blackjack():
 
         print("dealer hand probabilities", total_cards, dealer_hand)
         print("Chance of losing", chance_of_loss)
-            
+
     def distribute_winnings_all(self):
         player_data = {}
         for player in self.players:

@@ -57,23 +57,26 @@ class Player:
     # player doubles their bet and takes a hit
     # needs a return value?
     def double_down(self, deck):
-        self.current_bet *= self.current_bet
+        self.current_hand_bet *= 2
         self.hit(deck)
 
         return
 
     # calculate the next decision player should take
     # based on the strategy of AI
-    def calculate_minimax(self, action, deck, risk):
+    def calculate_minimax(self, deck, avg_expected, action, risk):
         print("\n IN THE MINIMAX FUNC")
-        # getting the list of probabilities, rajesh code
-        # params will probably change
-        prob = self.get_list()
-        reward = [i * self.current_hand_bet for i in prob]
+        # avg_expected = {'hit': 8.6, 'stand': 4.0}
+        avg_expected["double"] = avg_expected["hit"]
+        print("avg e: ", avg_expected)
+        prob_decision = {k: v * risk for (k, v) in avg_expected.items()}
+        print("print deicison: ", prob_decision)
+
+        reward = [i * self.current_hand_bet for i in prob_decision.values()]
         reward[-1] *= 2
+        print("reward: ", reward)
 
         d = ["hit", "stand", "double"]
-        prob_decision = dict(zip(d, prob))
         reward_decision = dict(zip(d, reward))
         print("this is the reward: ", reward_decision)
 
@@ -114,11 +117,6 @@ class Player:
 
         if d == "double":
             self.double_down(deck)
-
-    # pseudo-code for probability list
-    # will be overriden by rajesh code
-    def get_list(self):
-        return [0.5, 0.3, 0.5]
 
     def place_bet(self):
         pass
@@ -212,12 +210,11 @@ class SearchAgent(Player):
         self.trueCount = 0
         self.number_hands_to_simulate = number_hands_to_simulate
 
-    def take_action(self,deck, num_decks, game_state):
+    def take_action(self, deck, num_decks, game_state):
         actions = ["hit", "stand"]
         #actions = ["stand"]
         expected_value = {"hit":[] , "stand":[] }
-        #rupika decision making process
-        #simulated_blackjack = 
+        #simulated_blackjack =
     
         
         for action in actions:
@@ -239,7 +236,12 @@ class SearchAgent(Player):
         for action in actions : 
             expected_value[action] = (sum(expected_value[action])/len(expected_value[action]))
 
-        print (expected_value)
+        # chris calc win-loss odds
+
+
+        #rupika decision making process
+        Player.calculate_minimax(self, deck, expected_value, action="prac", risk=0.3)
+        # print (expected_value)
 
     def take_simulated_action(self,determined_action,simulation_deck):
         if determined_action == "hit":

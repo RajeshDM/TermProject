@@ -16,7 +16,7 @@ def main():
     #print(game.deck)
     print("Number of hands to play: ", game.number_hands)
     # game.calculate_win_odds(19, 10)
-    #game.play_game()
+    game.play_game()
     # game.wrapper_minimax()
 
     return
