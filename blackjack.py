@@ -73,6 +73,11 @@ class blackjack():
         for player in self.players :
             player.reset_hand()
 
+    def wrapper_minimax(self, action="prac", risk=0.31):
+        for player in self.players :
+            player.calculate_minimax(action, self.deck, risk)
+
+
     def calculate_win_odds(self, avg_hand, dealer_card):
         total_cards = 52*self.deck_count
         card_chance = {}
