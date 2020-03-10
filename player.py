@@ -205,19 +205,32 @@ class SearchAgent(Player):
 
     def take_action(self,deck, num_decks, game_state):
         actions = ["hit", "stand"]
+        #actions = ["stand"]
         expected_value = {"hit":[] , "stand":[] }
         #rupika decision making process
         #simulated_blackjack = 
     
+        
         for action in actions:
+            #print (self.hand)
             for i in range (0,self.number_hands_to_simulate):
                 simulated_blackjack = b.SimulatedBlackjack(game_state) 
+                simulated_blackjack.copy_state(game_state)
+                #for k in range (len(simulated_blackjack.players)):
+                #    print ("simulated", simulated_blackjack.players[k].hand)
+                #print (self.hand)
                 simulated_blackjack.play_simulated_hand(self.id,action)
                 for player in simulated_blackjack.players :
                     if player.id == self.id:
-                        #expected_value [action] = (expected_value[action]*(i) + sum(player.hand))/
+                        #print (player.hand)
                         expected_value [action].append(sum(player.hand))
+                del simulated_blackjack
 
+        print (expected_value)
+        for action in actions : 
+            expected_value[action] = (sum(expected_value[action])/len(expected_value[action]))
+
+        print (expected_value)
 
     def take_simulated_action(self,determined_action,simulation_deck):
         if determined_action == "hit":

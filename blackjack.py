@@ -8,6 +8,7 @@ March 13, 2020
 """
 import player as p
 import random
+import copy
 
 
 class Blackjack():
@@ -33,7 +34,7 @@ class Blackjack():
         self.players.append(p.DumbAgent(self.deck,1))
         #self.players.append(p.DumbAgent(self.deck))
         self.players.append(p.SmartAgent(self.deck,2))
-        self.players.append(p.SearchAgent(self.deck,3,2))
+        self.players.append(p.SearchAgent(self.deck,3,10))
         pass
 
     # select a random card from deck
@@ -158,5 +159,15 @@ class SimulatedBlackjack(Blackjack):
             #    print ("flag 1 - should not be here for the time being")
             #    player.take_action()
 
-    
-        
+    def copy_state(self,blackjack):
+        #simulation_blackjack = b.blackjack(2,3,1) 
+        #simulation_blackjack = copy.deepcopy(blackjack)
+        #for k in range (len(blackjack.players)):
+        #    print ("original", blackjack.players[k].hand)
+        #self = copy.deepcopy(blackjack)
+        self.players = blackjack.players[:]
+        for i in range (0,len(blackjack.players)):
+            self.players[i] = copy.deepcopy(blackjack.players[i])
+        #for k in range (len(self.players)):
+        #    print ("self", self.players[k].hand)
+        #return simulation_blackjack
