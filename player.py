@@ -7,9 +7,10 @@ March 13, 2020
 ***********************************
 """
 import random
+import blackjack as b
 
 class Player:
-    def __init__(self, deck):
+    def __init__(self, deck,player_id):
         self.hand = []
         self.memory = deck
         # balance should also be initialized
@@ -18,7 +19,7 @@ class Player:
         #self.current_bet = 0
         self.current_hand_bet = 50
         # give each player an id..?
-        self.id = 0
+        self.id = player_id
 
     # add a card to player hand
     def hit(self,deck):
@@ -128,8 +129,8 @@ class Player:
 
 
 class Dealer(Player):
-    def __init__(self, deck):
-        Player.__init__(self, deck)
+    def __init__(self, deck,player_id):
+        Player.__init__(self, deck, player_id)
 
     def take_action(self, deck):
         hand_val = 0
@@ -143,8 +144,8 @@ class Dealer(Player):
             
         
 class DumbAgent(Player):
-    def __init__(self, deck):
-        Player.__init__(self, deck)
+    def __init__(self, deck,player_id):
+        Player.__init__(self, deck,player_id)
 
     def take_action(self, deck, num_decks):
         self.hit(deck)
@@ -158,8 +159,8 @@ class DumbAgent(Player):
 
 
 class SmartAgent(Player):
-    def __init__(self, deck):
-        Player.__init__(self, deck)
+    def __init__(self, deck,player_id):
+        Player.__init__(self, deck,player_id)
         self.runCount = 0
         self.trueCount = 0
 
@@ -204,3 +205,73 @@ class SmartAgent(Player):
         #make bet
 
 
+class SearchAgent(Player):
+    def __init__(self, deck,player_id,number_hands_to_simulate):
+        Player.__init__(self, deck,player_id)
+        self.runCount = 0
+        self.trueCount = 0
+        self.number_hands_to_simulate = number_hands_to_simulate
+
+    def take_action(self,deck, num_decks, game_state):
+        actions = ["hit", "stand"]
+        #actions = ["stand"]
+        expected_value = {"hit":[] , "stand":[] }
+        #rupika decision making process
+        #simulated_blackjack = 
+    
+        
+        for action in actions:
+            #print (self.hand)
+            for i in range (0,self.number_hands_to_simulate):
+                simulated_blackjack = b.SimulatedBlackjack(game_state) 
+                simulated_blackjack.copy_state(game_state)
+                #for k in range (len(simulated_blackjack.players)):
+                #    print ("simulated", simulated_blackjack.players[k].hand)
+                #print (self.hand)
+                simulated_blackjack.play_simulated_hand(self.id,action)
+                for player in simulated_blackjack.players :
+                    if player.id == self.id:
+                        #print (player.hand)
+                        expected_value [action].append(sum(player.hand))
+                del simulated_blackjack
+
+        print (expected_value)
+        for action in actions : 
+            expected_value[action] = (sum(expected_value[action])/len(expected_value[action]))
+
+        print (expected_value)
+
+    def take_simulated_action(self,determined_action,simulation_deck):
+        if determined_action == "hit":
+            getattr(self,determined_action)(simulation_deck)
+            return 
+        if determined_action == "stand":
+            getattr(self,determined_action)()
+            return 
+
+    def place_bet(self, deck, num_decks):
+        self.update_count(deck, num_decks)
+        betting_unit = 25
+        self.current_hand_bet = (self.trueCount * betting_unit)
+        if( self.current_hand_bet < betting_unit):
+            self.current_hand_bet = betting_unit
+
+        print("I will bet", self.current_hand_bet)
+        #make bet
+
+    def update_count(self, deck, num_decks):
+        num_cards = 0
+        self.memory = deck
+        for i in range (1, 11):
+            if i < 7 and i > 1:
+                self.runCount += (4*num_decks - deck[i])
+            elif i == 10:
+                self.runCount -= (16*num_decks - deck[i])
+            elif i == 1:
+                self.runCount -= (4*num_decks - deck[i])
+            num_cards += deck[i]
+        deck_remain = num_cards/52
+        self.trueCount = (self.runCount / deck_remain)
+        print("Current deck count", self.runCount)
+        print("True count", self.trueCount, num_decks)
+        print(deck)

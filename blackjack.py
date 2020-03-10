@@ -8,9 +8,10 @@ March 13, 2020
 """
 import player as p
 import random
+import copy
 
 
-class blackjack():
+class Blackjack():
     def __init__(self, number_each_AI, deck_count , number_hands):
         self.players = []   
         
@@ -28,11 +29,12 @@ class blackjack():
             elif i == 10:
                 self.deck[i] = 16 * deck_count            
         self.number_hands = number_hands
-        self.dealer = p.Dealer(self.deck)
+        self.dealer = p.Dealer(self.deck,0)
         # give player an id here
-        self.players.append(p.DumbAgent(self.deck))
+        self.players.append(p.DumbAgent(self.deck,1))
         #self.players.append(p.DumbAgent(self.deck))
-        self.players.append(p.SmartAgent(self.deck))
+        self.players.append(p.SmartAgent(self.deck,2))
+        self.players.append(p.SearchAgent(self.deck,3,10))
         pass
 
     # select a random card from deck
@@ -67,7 +69,13 @@ class blackjack():
 
     def play_hand(self):
         for player in self.players :
-            player.take_action(self.deck, self.deck_count)
+            
+            if player.id != 3 :
+                player.take_action(self.deck, self.deck_count)
+            else :
+                #exit()
+                print ("taking search action")
+                player.take_action(self.deck,self.deck_count, self)
 
     def reset_hands(self):
         for player in self.players :
@@ -135,9 +143,36 @@ class blackjack():
                 print("player lost", player, player.balance, player_data[player], player_data[self.dealer])
                 player.balance -= player.current_hand_bet
                 
-    
-        
-            
-            
+      
+class SimulatedBlackjack(Blackjack):
+    def __init__(self, blackjack):
+        Blackjack.__init__(self,len(blackjack.players), blackjack.deck_count, 1)
 
-            
+
+    def play_simulated_hand(self,simulation_player_id, determined_action):
+        flag = 0 
+        for player in self.players :
+            if player.id == simulation_player_id :
+                #flag = 1
+                #if flag == 1 :
+                player.take_simulated_action(determined_action,self.deck)
+                #print ("flag 0 - should be here once ")
+                flag = 1
+                continue
+                break
+            #if flag == 1 :
+            #    print ("flag 1 - should not be here for the time being")
+            #    player.take_action()
+
+    def copy_state(self,blackjack):
+        #simulation_blackjack = b.blackjack(2,3,1) 
+        #simulation_blackjack = copy.deepcopy(blackjack)
+        #for k in range (len(blackjack.players)):
+        #    print ("original", blackjack.players[k].hand)
+        #self = copy.deepcopy(blackjack)
+        self.players = blackjack.players[:]
+        for i in range (0,len(blackjack.players)):
+            self.players[i] = copy.deepcopy(blackjack.players[i])
+        #for k in range (len(self.players)):
+        #    print ("self", self.players[k].hand)
+        #return simulation_blackjack
