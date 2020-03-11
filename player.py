@@ -32,6 +32,7 @@ class Player:
         self.hand.append(card)
         #print("current hand: ", self.hand)
         self.memory[card] -= 1
+        return card
         #print("current memory: ", self.memory)
 
 
@@ -64,30 +65,58 @@ class Player:
 
     # calculate the next decision player should take
     # based on the strategy of AI
-    def calculate_decision(self, deck, hand_count, lose_odds):
-        prob_decision = {k: hand_count[k] * lose_odds[k] for k in hand_count}
-        print("print deicison: ", prob_decision)
+    def calculate_minimax(self, deck, avg_expected, action, risk):
+        # avg_expected = {'hit': 8.6, 'stand': 4.0}
+        avg_expected["double"] = avg_expected["hit"]
+        #print("avg e: ", avg_expected)
+        prob_decision = {k: v * risk for (k, v) in avg_expected.items()}
+        #print("print deicison: ", prob_decision)
 
-        # break the tie between hit/stand by checking the
-        # hand count
-        if prob_decision["hit"] == prob_decision["stand"]:
-            if hand_count["hit"] > hand_count["stand"]:
-                self.hit(deck)
-            else:
-                self.stand()
+        reward = [i * self.current_hand_bet for i in prob_decision.values()]
+        reward[-1] *= 2
+        #print("reward: ", reward)
 
-        # if no ties, pick the best probability
-        else:
-            decision = max(prob_decision, key=prob_decision.get)
-            # pick between hit and double by
-            # checking lose probability
-            if decision == "hit":
-                if lose_odds["hit"] < .49:
-                    self.double_down(deck)
-                else:
+        d = ["hit", "stand", "double"]
+        reward_decision = dict(zip(d, reward))
+        #print("this is the reward: ", reward_decision)
+
+        # if AI is greedy and want the most $
+        if action == "money":
+            decision = max(reward_decision, key=reward_decision.get)
+            self.calc_decision(decision, deck)
+
+        # if AI is practical and wants to minimize loss
+        if action == "prac":
+            # break the tie between hit/double
+            if prob_decision["hit"] == prob_decision["double"]:
+                if risk > 0.3:
                     self.hit(deck)
+                else:
+                    self.double_down(deck)
+
+            # break the tie between hit/stand
+            if prob_decision["hit"] == prob_decision["stand"]:
+                if risk < 0.5:
+                    self.hit(deck)
+                else:
+                    self.stand()
+
+            # no ties, pick the best probability
             else:
-                self.stand()
+                decision = max(prob_decision, key=prob_decision.get)
+                self.calc_decision(decision, deck)
+
+
+    # calc decision helper function
+    def calc_decision(self, d, deck):
+        if d == "hit":
+            self.hit(deck)
+
+        if d == "stand":
+            self.stand()
+
+        if d == "double":
+            self.double_down(deck)
 
     def place_bet(self):
         pass
@@ -106,9 +135,10 @@ class Dealer(Player):
         stand_val = 17
         for x in self.hand:
             hand_val += x
-        print("hand value", hand_val)
-        if hand_val < stand_val:
-            self.hit(deck)
+        print("deal hand value", hand_val, self.hand)
+        while hand_val < stand_val:
+            hand_val += self.hit(deck)
+            print("deck", self.hand)
         pass
             
         
@@ -148,22 +178,23 @@ class SmartAgent(Player):
                 self.runCount -= (4*num_decks - deck[i])
             num_cards += deck[i]
         deck_remain = num_cards/52
-        self.trueCount = (self.runCount / deck_remain)
-        print("Current deck count", self.runCount)
-        print("True count", self.trueCount, num_decks)
-        print(deck)
+        if deck_remain > 0:
+            self.trueCount = (self.runCount / deck_remain)
+        #print("Current deck count", self.runCount)
+        #print("True count", self.trueCount, num_decks)
+        #print(deck)
 
 
     def take_action(self, deck, num_decks):
         self.update_count(deck, num_decks)
         hand_val = sum(self.hand)
         stand_val = 17
-        print("hand value", hand_val)
+        #print("hand value", hand_val)
         if hand_val < stand_val:
             self.hit(deck)
         pass
-        print("Current deck count in action", self.runCount)
-        print("Smart agent making play")
+        #print("Current deck count in action", self.runCount)
+        #print("Smart agent making play")
 
     def place_bet(self, deck, num_decks):
         self.update_count(deck, num_decks)
@@ -177,7 +208,7 @@ class SmartAgent(Player):
             self.current_hand_bet = self.balance
             self.balance -= self.current_hand_bet
 
-        print("I will bet", self.current_hand_bet)
+        #print("I will bet", self.current_hand_bet)
         #make bet
 
 
@@ -189,7 +220,7 @@ class SearchAgent(Player):
         self.number_hands_to_simulate = number_hands_to_simulate
 
     def calculate_win_odds(self, deck_count, deck, avg_hand, dealer_card):
-        print("avg hand", avg_hand, dealer_card)
+        #print("avg hand", avg_hand, dealer_card)
         total_cards = 52*deck_count
         card_chance = {}
         dealer_hand = {}
@@ -207,8 +238,8 @@ class SearchAgent(Player):
             if j > avg_hand:
                 chance_of_loss += dealer_hand[j]
 
-        print("dealer hand probabilities", total_cards, dealer_hand)
-        print("Chance of losing", chance_of_loss)
+        #print("dealer hand probabilities", total_cards, dealer_hand)
+        #print("Chance of losing", chance_of_loss)
         return chance_of_loss
 
     def take_action(self, deck, num_decks, game_state):
@@ -243,7 +274,7 @@ class SearchAgent(Player):
         print("win odds", win_odds)
         #Take win odds and use them to make decision
         #rupika decision making process
-        Player.calculate_decision(self, deck, expected_value, win_odds)
+        Player.calculate_minimax(self, deck, expected_value, action="prac", risk=0.3)
         # print (expected_value)
 
     def take_simulated_action(self,determined_action,simulation_deck):
@@ -266,7 +297,7 @@ class SearchAgent(Player):
             self_current_hand_bet = self.balance
             self.balance -= self.current_hand_bet
 
-        print("I will bet", self.current_hand_bet)
+       # print("I will bet", self.current_hand_bet)
         #make bet
 
     def update_count(self, deck, num_decks):
@@ -281,7 +312,8 @@ class SearchAgent(Player):
                 self.runCount -= (4*num_decks - deck[i])
             num_cards += deck[i]
         deck_remain = num_cards/52
-        self.trueCount = (self.runCount / deck_remain)
-        print("Current deck count", self.runCount)
-        print("True count", self.trueCount, num_decks)
-        print(deck)
+        if deck_remain > 0:
+            self.trueCount = (self.runCount / deck_remain)
+       # print("Current deck count", self.runCount)
+       # print("True count", self.trueCount, num_decks)
+       # print(deck)

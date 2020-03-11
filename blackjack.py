@@ -63,7 +63,7 @@ class Blackjack():
             cards_left += self.deck[i]
             
         print("cards left", cards_left)
-        if cards_left < 20:
+        if cards_left < 30:
             print("redealing")
             for i in range(1,11):
                 if i < 10:
@@ -93,6 +93,11 @@ class Blackjack():
     def reset_hands(self):
         for player in self.players :
             player.reset_hand()
+        self.dealer.reset_hand()
+
+    def wrapper_minimax(self, action="prac", risk=0.31):
+        for player in self.players :
+            player.calculate_minimax(action, self.deck, risk)
 
 
     def distribute_winnings_all(self):
