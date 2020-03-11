@@ -210,6 +210,29 @@ class SearchAgent(Player):
         self.trueCount = 0
         self.number_hands_to_simulate = number_hands_to_simulate
 
+    def calculate_win_odds(self, deck_count, deck, avg_hand, dealer_card):
+        print("avg hand", avg_hand, dealer_card)
+        total_cards = 52*deck_count
+        card_chance = {}
+        dealer_hand = {}
+        starting_val = dealer_card
+        for i in range(1, 11):
+            card_chance[i] = (deck[i]/total_cards)
+
+        #print('chance', card_chance[10])
+        chance_of_loss = 0
+        for j in range(starting_val, 22):
+            try:
+                dealer_hand[j] = card_chance[j-starting_val]
+            except:
+                dealer_hand[j] = 0
+            if j > avg_hand:
+                chance_of_loss += dealer_hand[j]
+
+        print("dealer hand probabilities", total_cards, dealer_hand)
+        print("Chance of losing", chance_of_loss)
+        return chance_of_loss
+
     def take_action(self, deck, num_decks, game_state):
         actions = ["hit", "stand"]
         #actions = ["stand"]
@@ -233,12 +256,14 @@ class SearchAgent(Player):
                 del simulated_blackjack
 
         print (expected_value)
+        win_odds = {}
         for action in actions : 
             expected_value[action] = (sum(expected_value[action])/len(expected_value[action]))
+            # chris calc win-loss odds
+            win_odds[action] = self.calculate_win_odds(num_decks, deck, expected_value[action], game_state.dealer.hand[0])
 
-        # chris calc win-loss odds
-
-
+        print("win odds", win_odds)
+        #Take win odds and use them to make decision
         #rupika decision making process
         Player.calculate_minimax(self, deck, expected_value, action="prac", risk=0.3)
         # print (expected_value)

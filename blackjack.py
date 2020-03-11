@@ -86,27 +86,6 @@ class Blackjack():
             player.calculate_minimax(action, self.deck, risk)
 
 
-    def calculate_win_odds(self, avg_hand, dealer_card):
-        total_cards = 52*self.deck_count
-        card_chance = {}
-        dealer_hand = {}
-        starting_val = dealer_card
-        for i in range(1, 11):
-            card_chance[i] = (self.deck[i]/total_cards)
-
-        #print('chance', card_chance[10])
-        chance_of_loss = 0
-        for j in range(starting_val, 22):
-            try:
-                dealer_hand[j] = card_chance[j-starting_val]
-            except:
-                dealer_hand[j] = 0
-            if j > avg_hand:
-                chance_of_loss += dealer_hand[j]
-
-        print("dealer hand probabilities", total_cards, dealer_hand)
-        print("Chance of losing", chance_of_loss)
-
     def distribute_winnings_all(self):
         player_data = {}
         for player in self.players:
