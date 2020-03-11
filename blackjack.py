@@ -47,14 +47,15 @@ class Blackjack():
     
     def play_game(self):
         #call some kind of bet before the hand
+        score = []
         for i in range (self.number_hands):
             self.place_bets()
             self.initial_deal()
             self.play_hand()
             self.dealer.take_action(self.deck)
-            self.distribute_winnings_dealer()
+            score.append(self.distribute_winnings_dealer())
             self.reset_hands()
-        pass
+        return score
 
     def initial_deal(self):
         for player in self.players :
@@ -104,6 +105,7 @@ class Blackjack():
     def distribute_winnings_dealer(self):
         player_data = {}
         player_data[self.dealer] = sum(self.dealer.hand)
+        score = []
         if player_data[self.dealer] > 21:
             player_data[self.dealer] = 0
 
@@ -114,9 +116,17 @@ class Blackjack():
             if player_data[player] > player_data[self.dealer]:
                 player.balance += player.current_hand_bet
                 print("player won", player, player.balance, player_data[player], player_data[self.dealer])
+                score.append(player.balance)
             elif player_data[player] < player_data[self.dealer]:
                 print("player lost", player, player.balance, player_data[player], player_data[self.dealer])
                 player.balance -= player.current_hand_bet
+                score.append(player.balance)
+            elif player_data[player] < player_data[self.dealer]:
+                score.append(player.balance)
+            else:
+                score.append(player.balance)
+        print("score", score)
+        return score
                 
       
 class SimulatedBlackjack(Blackjack):
