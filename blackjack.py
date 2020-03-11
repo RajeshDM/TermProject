@@ -58,6 +58,18 @@ class Blackjack():
         return score
 
     def initial_deal(self):
+        cards_left = 0
+        for i in range (1, 11):
+            cards_left += self.deck[i]
+            
+        print("cards left", cards_left)
+        if cards_left < 20:
+            print("redealing")
+            for i in range(1,11):
+                if i < 10:
+                    self.deck[i] = 4 * self.deck_count
+                elif i == 10:
+                    self.deck[i] = 16 * self.deck_count  
         for player in self.players :
             player.hit(self.deck)
             player.hit(self.deck)
@@ -118,16 +130,15 @@ class Blackjack():
             if player_data[player] > 21:
                 player_data[player] = 0
             if player_data[player] > player_data[self.dealer]:
-                player.balance += player.current_hand_bet
+                player.balance += (2*player.current_hand_bet)
                 print("player won", player, player.balance, player_data[player], player_data[self.dealer])
                 score.append(player.balance)
-            elif player_data[player] < player_data[self.dealer]:
-                print("player lost", player, player.balance, player_data[player], player_data[self.dealer])
-                player.balance -= player.current_hand_bet
-                score.append(player.balance)
-            elif player_data[player] < player_data[self.dealer]:
+            elif player_data[player] == player_data[self.dealer]:
+                print("player tied", player)
+                player.balance += player.current_hand_bet
                 score.append(player.balance)
             else:
+                print("player lost")
                 score.append(player.balance)
         print("score", score)
         return score

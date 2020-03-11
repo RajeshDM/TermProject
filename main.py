@@ -10,7 +10,7 @@ import blackjack as b
 from pandas import DataFrame
 
 def main():
-    game = b.Blackjack(2, 6, 500)
+    game = b.Blackjack(2, 6, 100)
     print("Game players: " , game.players)
     print("Game deck: ", game.deck)
     #game.deck[1] -= 2

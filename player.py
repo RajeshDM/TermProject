@@ -30,9 +30,9 @@ class Player:
                 break
 
         self.hand.append(card)
-        print("current hand: ", self.hand)
+        #print("current hand: ", self.hand)
         self.memory[card] -= 1
-        print("current memory: ", self.memory)
+        #print("current memory: ", self.memory)
 
 
     # start with fresh hand for new game
@@ -65,7 +65,6 @@ class Player:
     # calculate the next decision player should take
     # based on the strategy of AI
     def calculate_minimax(self, deck, avg_expected, action, risk):
-        print("\n IN THE MINIMAX FUNC")
         # avg_expected = {'hit': 8.6, 'stand': 4.0}
         avg_expected["double"] = avg_expected["hit"]
         print("avg e: ", avg_expected)
@@ -147,11 +146,13 @@ class DumbAgent(Player):
 
     def take_action(self, deck, num_decks):
         self.hit(deck)
-        print("in override take action")
-
+    
     def place_bet(self, deck, num_decks):
-        if self.balance >= 1 :
-            self.current_hand_bet = 1
+        if self.balance >= 50 :
+            self.current_hand_bet = 50
+            self.balance -= self.current_hand_bet
+        else:
+            self.current_hand_bet = self.balance
             self.balance -= self.current_hand_bet
         pass
 
@@ -198,6 +199,11 @@ class SmartAgent(Player):
         self.current_hand_bet = (self.trueCount * betting_unit)
         if( self.current_hand_bet < betting_unit):
             self.current_hand_bet = betting_unit
+            self.balance -= self.current_hand_bet
+
+        if self.current_hand_bet > self.balance:
+            self.current_hand_bet = self.balance
+            self.balance -= self.current_hand_bet
 
         print("I will bet", self.current_hand_bet)
         #make bet
@@ -282,6 +288,11 @@ class SearchAgent(Player):
         self.current_hand_bet = (self.trueCount * betting_unit)
         if( self.current_hand_bet < betting_unit):
             self.current_hand_bet = betting_unit
+            self.balance -= self.current_hand_bet
+
+        if self.current_hand_bet < self.balance:
+            self_current_hand_bet = self.balance
+            self.balance -= self.current_hand_bet
 
         print("I will bet", self.current_hand_bet)
         #make bet
