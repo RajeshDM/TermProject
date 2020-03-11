@@ -81,10 +81,6 @@ class Blackjack():
         for player in self.players :
             player.reset_hand()
 
-    def wrapper_minimax(self, action="prac", risk=0.31):
-        for player in self.players :
-            player.calculate_minimax(action, self.deck, risk)
-
 
     def distribute_winnings_all(self):
         player_data = {}

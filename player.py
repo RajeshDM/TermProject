@@ -64,59 +64,30 @@ class Player:
 
     # calculate the next decision player should take
     # based on the strategy of AI
-    def calculate_minimax(self, deck, avg_expected, action, risk):
-        print("\n IN THE MINIMAX FUNC")
-        # avg_expected = {'hit': 8.6, 'stand': 4.0}
-        avg_expected["double"] = avg_expected["hit"]
-        print("avg e: ", avg_expected)
-        prob_decision = {k: v * risk for (k, v) in avg_expected.items()}
+    def calculate_decision(self, deck, hand_count, lose_odds):
+        prob_decision = {k: hand_count[k] * lose_odds[k] for k in hand_count}
         print("print deicison: ", prob_decision)
 
-        reward = [i * self.current_hand_bet for i in prob_decision.values()]
-        reward[-1] *= 2
-        print("reward: ", reward)
-
-        d = ["hit", "stand", "double"]
-        reward_decision = dict(zip(d, reward))
-        print("this is the reward: ", reward_decision)
-
-        # if AI is greedy and want the most $
-        if action == "money":
-            decision = max(reward_decision, key=reward_decision.get)
-            self.calc_decision(decision, deck)
-
-        # if AI is practical and wants to minimize loss
-        if action == "prac":
-            # break the tie between hit/double
-            if prob_decision["hit"] == prob_decision["double"]:
-                if risk > 0.3:
-                    self.hit(deck)
-                else:
-                    self.double_down(deck)
-
-            # break the tie between hit/stand
-            if prob_decision["hit"] == prob_decision["stand"]:
-                if risk < 0.5:
-                    self.hit(deck)
-                else:
-                    self.stand()
-
-            # no ties, pick the best probability
+        # break the tie between hit/stand by checking the
+        # hand count
+        if prob_decision["hit"] == prob_decision["stand"]:
+            if hand_count["hit"] > hand_count["stand"]:
+                self.hit(deck)
             else:
-                decision = max(prob_decision, key=prob_decision.get)
-                self.calc_decision(decision, deck)
+                self.stand()
 
-
-    # calc decision helper function
-    def calc_decision(self, d, deck):
-        if d == "hit":
-            self.hit(deck)
-
-        if d == "stand":
-            self.stand()
-
-        if d == "double":
-            self.double_down(deck)
+        # if no ties, pick the best probability
+        else:
+            decision = max(prob_decision, key=prob_decision.get)
+            # pick between hit and double by
+            # checking lose probability
+            if decision == "hit":
+                if lose_odds["hit"] < .49:
+                    self.double_down(deck)
+                else:
+                    self.hit(deck)
+            else:
+                self.stand()
 
     def place_bet(self):
         pass
@@ -265,7 +236,7 @@ class SearchAgent(Player):
         print("win odds", win_odds)
         #Take win odds and use them to make decision
         #rupika decision making process
-        Player.calculate_minimax(self, deck, expected_value, action="prac", risk=0.3)
+        Player.calculate_decision(self, deck, expected_value, win_odds)
         # print (expected_value)
 
     def take_simulated_action(self,determined_action,simulation_deck):
