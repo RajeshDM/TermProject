@@ -34,7 +34,8 @@ class Blackjack():
         self.players.append(p.DumbAgent(self.deck,1))
         #self.players.append(p.DumbAgent(self.deck))
         self.players.append(p.SmartAgent(self.deck,2))
-        self.players.append(p.SearchAgent(self.deck,3,10))
+        #self.players.append(p.SearchAgent(self.deck,3,10))
+        self.players.append(p.SearchAgent(self.deck,3,10,5))
         pass
 
     # select a random card from deck
@@ -84,11 +85,11 @@ class Blackjack():
 
     def place_bets(self):
          for player in self.players :
-             if player.id == 3:
-                 print('searchbet')
-                 player.place_MCTS_bets
-             else:
+             if player.id != 3 :
                  player.place_bet(self.deck, self.deck_count)
+             else :
+                 print ("Placing smart bets")
+                 player.place_MCTS_bet(self.deck,self.deck_count,self )
 
     def play_hand(self):
         for player in self.players :
@@ -174,6 +175,20 @@ class SimulatedBlackjack(Blackjack):
             #if flag == 1 :
             #    print ("flag 1 - should not be here for the time being")
             #    player.take_action()
+
+    def play_simulated_game(self):
+        #call some kind of bet before the hand
+        score = []
+        for z in range(0, 1):
+            for i in range (self.number_hands):
+                self.initial_deal()
+                self.play_hand()
+                self.dealer.take_action(self.deck)
+                score.append(self.distribute_winnings_dealer())
+                self.reset_hands()
+            self.reset_bank()
+            #score.append()
+        return score
 
     def copy_state(self,blackjack):
         #simulation_blackjack = b.blackjack(2,3,1) 

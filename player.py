@@ -245,11 +245,12 @@ class SmartAgent(Player):
 
 
 class SearchAgent(Player):
-    def __init__(self, deck,player_id,number_hands_to_simulate):
+    def __init__(self, deck,player_id,number_hands_to_simulate,number_bets_hands_to_simulate):
         Player.__init__(self, deck,player_id)
         self.runCount = 0
         self.trueCount = 0
         self.number_hands_to_simulate = number_hands_to_simulate
+        self.number_bets_hands_to_simulate = number_bets_hands_to_simulate
 
     def calculate_win_odds(self, deck_count, deck, avg_hand, dealer_card):
         #print("avg hand", avg_hand, dealer_card)
@@ -318,6 +319,7 @@ class SearchAgent(Player):
             getattr(self,determined_action)()
             return 
 
+    '''
     def place_MCTS_bets(self, deck, num_decks):
         self.update_count(deck,num_decks)
         betting_unit = 25
@@ -335,6 +337,34 @@ class SearchAgent(Player):
         if average_rewards < 0 :
             pass
 
+    '''
+
+    def place_MCTS_bet(self, deck, num_decks,game_state):
+        self.update_count(deck,num_decks)
+        betting_unit = 25 
+        expected_values = []
+        self.currend_hand_bet = betting_unit    
+        original_balance = self.balance
+        number_wins = 0
+        for i in range(self.number_bets_hands_to_simulate):
+            simulated_blackjack = b.SimulatedBlackjack(game_state) 
+            simulated_blackjack.copy_state(game_state)
+            scores = simulated_blackjack.play_simulated_game()
+            expected_values.append(scores[0][-1])
+
+        print (expected_values)
+
+        average_balance_after_hand_simulations = (sum(expected_values)/len(expected_values))
+        for elem in expected_values : 
+            if elem > original_balance :
+                number_wins += 1 
+ 
+        win_probability = number_wins/self.number_bets_hands_to_simulate
+        self.current_hand_bet = betting_unit * 2 ** (3 * (win_probability -0.3))
+
+        print ("Numebr wins : " , number_wins)
+        print ("win probability = :" , win_probability)
+    
     def place_bet(self, deck, num_decks):
         self.update_count(deck, num_decks)
         betting_unit = 0.5
