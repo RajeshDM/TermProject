@@ -16,7 +16,7 @@ def main():
    
     #score = DataFrame(game.play_game())
     #for i in range (1, 5):
-    game = b.Blackjack(2, 6, 100)
+    game = b.Blackjack(2, 6, 50)
        # print("Game players: " , game.players)
         #print("Game deck: ", game.deck)
         #game.deck[1] -= 2

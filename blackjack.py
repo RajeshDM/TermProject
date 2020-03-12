@@ -46,12 +46,12 @@ class Blackjack():
 
     def reset_bank(self):
         for player in self.players :
-            player.balance = 500
+            player.balance = 5000
         
     def play_game(self):
         #call some kind of bet before the hand
         score = []
-        for z in range(0, 20):
+        for z in range(0, 50):
             for i in range (self.number_hands):
                 self.place_bets()
                 self.initial_deal()
@@ -84,7 +84,11 @@ class Blackjack():
 
     def place_bets(self):
          for player in self.players :
-             player.place_bet(self.deck, self.deck_count)
+             if player.id == 3:
+                 print('searchbet')
+                 player.place_MCTS_bets
+             else:
+                 player.place_bet(self.deck, self.deck_count)
 
     def play_hand(self):
         for player in self.players :
@@ -101,9 +105,9 @@ class Blackjack():
             player.reset_hand()
         self.dealer.reset_hand()
 
-    # def wrapper_minimax(self, action="prac", risk=0.31):
-    #     for player in self.players :
-    #         player.calculate_minimax(action, self.deck, risk)
+    def wrapper_minimax(self, action="prac", risk=0.31):
+        for player in self.players :
+            player.calculate_minimax(action, self.deck, risk)
 
 
     def distribute_winnings_all(self):

@@ -14,7 +14,7 @@ class Player:
         self.hand = []
         self.memory = deck
         # balance should also be initialized
-        self.balance = 500
+        self.balance = 5000
         #self.start_bet = 0
         #self.current_bet = 0
         self.current_hand_bet = 50
@@ -58,7 +58,8 @@ class Player:
     # player doubles their bet and takes a hit
     # needs a return value?
     def double_down(self, deck):
-        self.current_hand_bet *= 2
+        if self.current_hand_bet > self.balance:
+            self.current_hand_bet *= 2
         self.hit(deck)
 
         return
@@ -223,7 +224,7 @@ class SmartAgent(Player):
 
     def place_bet(self, deck, num_decks):
         self.update_count(deck, num_decks)
-        betting_unit = 25
+        betting_unit = 0.5
         self.current_hand_bet = (self.trueCount * betting_unit)
         if( self.current_hand_bet < betting_unit):
             self.current_hand_bet = betting_unit
@@ -231,6 +232,12 @@ class SmartAgent(Player):
 
         if self.current_hand_bet > self.balance:
             self.current_hand_bet = self.balance
+            self.balance -= self.current_hand_bet   
+        elif self.current_hand_bet > 10000:
+            self.current_hand_bet = 9000
+            self.balance -= self.current_hand_bet
+        elif self.current_hand_bet > (0.5)*self.balance:
+            self.current_hand_bet = (0.5)*self.balance
             self.balance -= self.current_hand_bet
 
         #print("I will bet", self.current_hand_bet)
@@ -313,7 +320,7 @@ class SearchAgent(Player):
 
     def place_MCTS_bets(self, deck, num_decks):
         self.update_count(deck,num_decks)
-        betting_unit = 25 
+        betting_unit = 25
         expected_values = []
         self.currend_hand_bet = betting_unit    
     
@@ -330,17 +337,16 @@ class SearchAgent(Player):
 
     def place_bet(self, deck, num_decks):
         self.update_count(deck, num_decks)
-        betting_unit = 25
+        betting_unit = 0.5
         self.current_hand_bet = (self.trueCount * betting_unit)
         if( self.current_hand_bet < betting_unit):
             self.current_hand_bet = betting_unit
             self.balance -= self.current_hand_bet
 
-        if self.current_hand_bet < self.balance:
-            self_current_hand_bet = self.balance
+        if self.current_hand_bet > self.balance:
+            self.current_hand_bet = self.balance
             self.balance -= self.current_hand_bet
-
-       # print("I will bet", self.current_hand_bet)
+        print("smart agent bet", self.current_hand_bet)
         #make bet
 
     def update_count(self, deck, num_decks):
