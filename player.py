@@ -175,7 +175,7 @@ class SmartAgent(Player):
             elif i == 10:
                 self.runCount -= (16*num_decks - deck[i])
             elif i == 1:
-                self.runCount -= (4*num_decks - deck[i])
+                self.runCount += (4*num_decks - deck[i])
             num_cards += deck[i]
         deck_remain = num_cards/52
         if deck_remain > 0:
@@ -309,7 +309,7 @@ class SearchAgent(Player):
             elif i == 10:
                 self.runCount -= (16*num_decks - deck[i])
             elif i == 1:
-                self.runCount -= (4*num_decks - deck[i])
+                self.runCount += (4*num_decks - deck[i])
             num_cards += deck[i]
         deck_remain = num_cards/52
         if deck_remain > 0:

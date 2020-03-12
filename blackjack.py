@@ -44,17 +44,23 @@ class Blackjack():
         self.deck[card] -= 1
         return card
 
-    
+    def reset_bank(self):
+        for player in self.players :
+            player.balance = 500
+        
     def play_game(self):
         #call some kind of bet before the hand
         score = []
-        for i in range (self.number_hands):
-            self.place_bets()
-            self.initial_deal()
-            self.play_hand()
-            self.dealer.take_action(self.deck)
-            score.append(self.distribute_winnings_dealer())
-            self.reset_hands()
+        for z in range(0, 20):
+            for i in range (self.number_hands):
+                self.place_bets()
+                self.initial_deal()
+                self.play_hand()
+                self.dealer.take_action(self.deck)
+                score.append(self.distribute_winnings_dealer())
+                self.reset_hands()
+            self.reset_bank()
+            #score.append()
         return score
 
     def initial_deal(self):
