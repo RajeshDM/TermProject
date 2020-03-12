@@ -285,6 +285,23 @@ class SearchAgent(Player):
             getattr(self,determined_action)()
             return 
 
+    def place_MCTS_bets(self, deck, num_decks):
+        self.update_count(deck,num_decks)
+        betting_unit = 25 
+        expected_values = []
+        self.currend_hand_bet = betting_unit    
+    
+        for i in range(self,number_hand_simulations):
+            simulated_blackjack = b.SimulatedBlackjack(game_state) 
+            simulated_blackjack.copy_state(game_state)
+            for player in simulated_blackjack.players :
+                player.take_action()
+            expected_values.append(player.balance)
+
+        acerage_rewards_after_hand_simulations = (sum(expected_values)/len(expected_values))
+        if average_rewards < 0 :
+            pass
+
     def place_bet(self, deck, num_decks):
         self.update_count(deck, num_decks)
         betting_unit = 25
