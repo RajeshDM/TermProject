@@ -69,9 +69,9 @@ class Blackjack():
         for i in range (1, 11):
             cards_left += self.deck[i]
             
-        print("cards left", cards_left)
+       # print("cards left", cards_left)
         if cards_left < 30:
-            print("redealing")
+           # print("redealing")
             for i in range(1,11):
                 if i < 10:
                     self.deck[i] = 4 * self.deck_count
@@ -88,7 +88,7 @@ class Blackjack():
              if player.id != 3 :
                  player.place_bet(self.deck, self.deck_count)
              else :
-                 print ("Placing smart bets")
+               #  print ("Placing smart bets")
                  player.place_MCTS_bet(self.deck,self.deck_count,self )
 
     def play_hand(self):
@@ -98,7 +98,7 @@ class Blackjack():
                 player.take_action(self.deck, self.deck_count)
             else :
                 #exit()
-                print ("taking search action")
+               # print ("taking search action")
                 player.take_action(self.deck,self.deck_count, self)
 
     def reset_hands(self):
@@ -124,7 +124,7 @@ class Blackjack():
         round_winner = max(player_data,key=player_data.get)
         
         #round_winner = player_data.pop()
-        print ("round winner" , round_winner)
+       # print ("round winner" , round_winner)
         for player in self.players:
             if round_winner != player :
                 round_winner.balance += player.current_hand_bet
@@ -152,7 +152,7 @@ class Blackjack():
             else:
                 print("player lost")
                 score.append(player.balance)
-        print("score", score)
+        #print("score", score)
         return score
                 
       
